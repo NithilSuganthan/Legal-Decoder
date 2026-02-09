@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#7c3aed">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Legal Document Decoder | Simplify Complex Legal Language</title>
+    <meta name="description"
+        content="Upload legal documents and get plain-English explanations. Understand contracts, court judgments, and legal agreements without a law degree.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+
+<body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <path
+                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42">
+            </path>
+        </svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </button>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <h1>Legal Decoder</h1>
+            </div>
+            <p class="tagline">Understand legal documents in plain English</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Upload Section -->
+            <section class="upload-section" id="uploadSection">
+                <div class="upload-card">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <h2>Upload Legal Document</h2>
+                        <p>Drag and drop a PDF or TXT file here</p>
+                        <span class="divider">or</span>
+                        <input type="file" id="fileInput" accept=".pdf,.txt,.doc,.docx" hidden>
+                        <button class="btn btn-primary" id="browseBtn">Browse Files</button>
+                    </div>
+
+                    <div class="paste-section">
+                        <h3>Or paste document text directly</h3>
+                        <textarea id="pasteArea" placeholder="Paste your legal document text here..."></textarea>
+                        <button class="btn btn-secondary" id="analyzeBtn">Analyze Document</button>
+                    </div>
+                </div>
+
+                <!-- Disclaimer -->
+                <div class="disclaimer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <p><strong>Disclaimer:</strong> This tool explains legal documents in simple language. It does NOT
+                        provide legal advice. For legal decisions, consult a qualified attorney.</p>
+                </div>
+            </section>
+
+            <!-- Analysis Section (Hidden until document is uploaded) -->
+            <section class="analysis-section" id="analysisSection" style="display: none;">
+                <!-- Document Header -->
+                <div class="document-header">
+                    <h2 id="documentTitle">Document Analysis</h2>
+                    <button class="btn btn-outline" id="newDocBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"
+                            height="16">
+                            <path d="M12 5v14M5 12h14"></path>
+                        </svg>
+                        New Document
+                    </button>
+                </div>
+
+                <!-- Analysis Tabs -->
+                <div class="tabs">
+                    <button class="tab active" data-tab="summary">Summary</button>
+                    <button class="tab" data-tab="clauses">Clauses</button>
+                    <button class="tab" data-tab="entities">Entities</button>
+                    <button class="tab" data-tab="risks">Risks</button>
+                    <button class="tab" data-tab="obligations">Obligations</button>
+                    <button class="tab" data-tab="precedents">Precedents</button>
+                    <button class="tab" data-tab="chat">Ask Questions</button>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- Summary Tab -->
+                    <div class="tab-panel active" id="summary">
+                        <div class="summary-grid">
+                            <div class="summary-card">
+                                <h3>📋 TL;DR Summary</h3>
+                                <div id="tldrContent" class="content-area"></div>
+                            </div>
+                            <div class="summary-card">
+                                <h3>🎭 Tone Analysis</h3>
+                                <div id="toneContent" class="content-area"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clauses Tab -->
+                    <div class="tab-panel" id="clauses">
+                        <h3>Clause-by-Clause Breakdown</h3>
+                        <p class="tab-description">Each paragraph with its plain-English explanation</p>
+                        <div id="clausesContent" class="clauses-list"></div>
+                    </div>
+
+                    <!-- Entities Tab -->
+                    <div class="tab-panel" id="entities">
+                        <h3>Extracted Information</h3>
+                        <p class="tab-description">Key details identified from the document</p>
+                        <div id="entitiesContent" class="entities-grid"></div>
+                    </div>
+
+                    <!-- Risks Tab -->
+                    <div class="tab-panel" id="risks">
+                        <h3>⚠️ Risks & Restrictions</h3>
+                        <p class="tab-description">Penalties, liabilities, and limitations identified</p>
+                        <div id="risksContent" class="risks-list"></div>
+                    </div>
+
+                    <!-- Obligations Tab -->
+                    <div class="tab-panel" id="obligations">
+                        <h3>📌 Obligations & Conditions</h3>
+                        <p class="tab-description">Requirements and conditions imposed by the document</p>
+                        <div id="obligationsContent" class="obligations-list"></div>
+                    </div>
+
+                    <!-- Precedents Tab -->
+                    <div class="tab-panel" id="precedents">
+                        <h3>📚 Legal References</h3>
+                        <p class="tab-description">Cited cases, statutes, and legal provisions</p>
+                        <div id="precedentsContent" class="precedents-list"></div>
+                    </div>
+
+                    <!-- Chat Tab -->
+                    <div class="tab-panel" id="chat">
+                        <h3>Ask Questions About This Document</h3>
+                        <p class="tab-description">I can only answer questions based on the uploaded document</p>
+                        <div class="chat-container">
+                            <div class="chat-messages" id="chatMessages">
+                                <div class="chat-message assistant">
+                                    <div class="message-avatar">🤖</div>
+                                    <div class="message-content">
+                                        <p>Hello! I've analyzed your document. Ask me anything about its contents, and
+                                            I'll explain it in simple terms. Remember, I can only answer questions based
+                                            on what's in this document.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chat-input-container">
+                                <input type="text" id="chatInput" placeholder="Ask a question about the document..."
+                                    autocomplete="off">
+                                <button class="btn btn-primary" id="sendBtn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        width="20" height="20">
+                                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Legal Decoder • For educational purposes only • Not legal advice</p>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p>Analyzing document...</p>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
